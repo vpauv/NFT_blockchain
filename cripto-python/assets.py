@@ -7,22 +7,22 @@ import transfer as transModule
 def create_NFT(algod_client, acct):
     sp = algod_client.suggested_params()
     txn = transaction.AssetConfigTxn(
-        sender=acct.address,
+        sender=acct[1],
         sp=sp,
         default_frozen=False,
         unit_name="rug",
         asset_name="Really Useful Gift",
-        manager=acct.address,  #Permisos sobre el NFT
-        reserve=acct.address,
-        freeze=acct.address,
-        clawback=acct.address,
+        manager=acct[1],  #Permisos sobre el NFT
+        reserve=acct[1],
+        freeze=acct[1],
+        clawback=acct[1],
         url="https://path/to/my/asset/details.json",  #URL de la metadata del NFT en formato JSON 
         total=1,  #Numero de copias del NTF
         decimals=0, #Numero de particiones
     )
 
     # Sign with secret key of creator
-    stxn = txn.sign(acct.private_key)
+    stxn = txn.sign(acct[0])
     # Send the transaction to the network and retrieve the txid.
     txid = algod_client.send_transaction(stxn)
     print(f"Sent asset create transaction with txid: {txid}")
