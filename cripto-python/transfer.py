@@ -30,11 +30,11 @@ def transfer_nft_wContract(algod_client,contract_address, private_key, sender, r
     txid = algod_client.send_transaction(signed_txn)
     return txid
 
-def create_contract_trans(algod_client,teal_code):
+def create_contract_trans(algod_client,teal_code,acct1):
     # Crea una transacción de creación de contrato
     params = algod_client.suggested_params()
     txn = transaction.ApplicationCreateTxn(
-        sender="YOUR_ACCOUNT_ADDRESS",
+        sender=acct1[0],
         sp=params,
         on_complete=transaction.OnComplete.NoOpOC,
         approval_program=teal_code,
@@ -42,7 +42,7 @@ def create_contract_trans(algod_client,teal_code):
     )
 
     # Firme la transacción con la clave privada de la cuenta
-    private_key = "YOUR_ACCOUNT_PRIVATE_KEY"
+    private_key = acct1[0]
     signed_txn = txn.sign(private_key)
 
     # Envía la transacción a la red
@@ -57,4 +57,5 @@ def create_contract_trans(algod_client,teal_code):
     print("Contrato desplegado con éxito. ID del contrato:", contract_id)
     
     return contract_id
+        
         
