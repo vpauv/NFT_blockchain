@@ -3,11 +3,11 @@ from algosdk import account
 def generate_keypair(num_accts, accts):
     for _ in range(num_accts):
         acct = account.generate_account()
+        print(acct)
         accts.append(acct)
-        print(f"address: {acct.address}")
-        print(f"private key: {acct.private_key}")
-        #print(f"mnemonic: {mnemonic.from_private_key(account.private_key)}")
-        print(f"mnemonic: {acct.secret_key_to_mnemonic(acct.sk)}")
+        print(f"address: {acct[1]}")
+        print(f"private key: {acct[0]}")
+        print(f"mnemonic: {mnemonic.from_private_key(acct[0])}")
 
     return accts
 
