@@ -78,11 +78,11 @@ def delete_nft(algod_client, acct, created_asset):
     sp = algod_client.suggested_params()
     # Create asset destroy transaction to destroy the asset
     destroy_txn = transaction.AssetDestroyTxn(
-        sender=acct.address,
+        sender=acct[1],
         sp=sp,
         index=created_asset,
     )
-    signed_destroy_txn = destroy_txn.sign(acct.private_key)
+    signed_destroy_txn = destroy_txn.sign(acct[0])
     txid = algod_client.send_transaction(signed_destroy_txn)
     print(f"Sent destroy transaction with txid: {txid}")
 
