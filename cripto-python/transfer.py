@@ -17,7 +17,7 @@ def transfer_nft(algod_client,acct1,acct2,created_asset):
     results = transaction.wait_for_confirmation(algod_client, txid, 4)
     print(f"Result confirmed in round: {results['confirmed-round']}")
 
-def transfer_nft_wContract(algod_client,contract_address, private_key, sender, receiver):
+def transfer_nft_wContract(algod_client,contract_address, sender, receiver):
     params = algod_client.suggested_params()
     txn = transaction.ApplicationCallTxn(
         sender=encoding.decode_address(contract_address),
@@ -26,7 +26,7 @@ def transfer_nft_wContract(algod_client,contract_address, private_key, sender, r
         app_args=[encoding.decode_address(sender), encoding.decode_address(receiver)],
         on_complete=transaction.OnComplete.NoOpOC
     )
-    signed_txn = txn.sign(private_key)
+    signed_txn = txn.sign(sender[0])
     txid = algod_client.send_transaction(signed_txn)
     return txid
 
