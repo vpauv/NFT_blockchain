@@ -57,16 +57,16 @@ def modify_asset(algod_client, acct):
     # Create a config transaction that wipes the
     # reserve address for the asset
     txn = transaction.AssetConfigTxn(
-        sender=acct.address,
+        sender=acct[1],
         sp=sp,
-        manager=acct.address,
+        manager=acct[1],
         reserve=None,
-        freeze=acct.address,
-        clawback=acct.address,
+        freeze=acct[1],
+        clawback=acct[1],
         strict_empty_address_check=False,
     )
     # Sign with secret key of manager
-    stxn = txn.sign(acct.private_key)
+    stxn = txn.sign(acct[0])
     # Send the transaction to the network and retrieve the txid.
     txid = algod_client.send_transaction(stxn)
     print(f"Sent asset config transaction with txid: {txid}")
