@@ -1,4 +1,4 @@
-from algosdk import account
+from algosdk import account, mnemonic
 
 def generate_keypair(num_accts, accts):
     for _ in range(num_accts):
