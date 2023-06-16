@@ -1,19 +1,17 @@
 from typing import Any, Dict
-from algosdk import transaction, encoding
+from algosdk import transaction
 import utils
-import transfer as transModule
+import json, hashlib
 # Account 1 creates an asset called `rug` with a total supply
 # of 1000 units and sets itself to the freeze/clawback/manager/reserve roles
 
-def create_NFT(acct):
+def create_NFT(algod_client,acct,metadata):
      # Convertir el diccionario a JSON
     metadata_json = json.dumps(metadata)
     hash = hash_json(metadata_json)
     
     # Imprimir el JSON resultante
     #print(metadata_json)
-    
-    algod_client = utils.get_algod_client()
     sp = algod_client.suggested_params()
 
     print("Creando solicitud de NFT...:")
@@ -32,6 +30,7 @@ def create_NFT(acct):
         metadata_hash = hash,
         total=1,  #Numero de copias del NTF
         decimals=0, #Numero de particiones
+        metadata = metadata_json
     )
 
     # Sign with secret key of creator
@@ -49,21 +48,11 @@ def create_NFT(acct):
 
     return created_asset
 
-
-# Función para crear un NFT en el contrato
-def create_nft_wContract(algod_client,contract_address, private_key, metadata):
-    params = algod_client.suggested_params()
-    txn = transaction.ApplicationCallTxn(
-        sender=encoding.decode_address(contract_address),
-        sp=params,
-        index=0,  # Índice de la función de creación en el contrato
-        app_args=[bytes(metadata, "utf-8")],
-        on_complete=transaction.OnComplete.NoOpOC
-    )
-    signed_txn = txn.sign(private_key)
-    txid = algod_client.send_transaction(signed_txn)
-    return txid
-
+def hash_json(metadata_json):
+    # Calcular el hash del JSON utilizando SHA-256
+    hash_object = hashlib.sha256(metadata_json.encode())
+    hash_value = hash_object.hexdigest()
+    return hash_value
 
 def modify_asset(algod_client, acct):
     sp = algod_client.suggested_params()
@@ -87,8 +76,7 @@ def modify_asset(algod_client, acct):
     results = transaction.wait_for_confirmation(algod_client, txid, 4)
     print(f"Result confirmed in round: {results['confirmed-round']}")
 
-def delete_nft(acct, created_asset):
-    algod_client = get_algod_client()
+def delete_nft(algod_client,acct, created_asset):
     sp = algod_client.suggested_params()
     # Create asset destroy transaction to destroy the asset
     destroy_txn = transaction.AssetDestroyTxn(
@@ -103,18 +91,6 @@ def delete_nft(acct, created_asset):
     results = transaction.wait_for_confirmation(algod_client, txid, 4)
     print(f"Result confirmed in round: {results['confirmed-round']}")
 
-def delete_nft_wContract(algod_client, contract_address, private_key):
-    params = algod_client.suggested_params()
-    txn = transaction.ApplicationCallTxn(
-        sender=encoding.decode_address(contract_address),
-        sp=params,
-        index=3,  # Índice de la función de eliminación en el contrato
-        app_args=[],
-        on_complete=transaction.OnComplete.NoOpOC
-    )
-    signed_txn = txn.sign(private_key)
-    txid = algod_client.send_transaction(signed_txn)
-    return txid
 
 def retrieve_asset_info(algod_client,created_asset):
     # Retrieve the asset info of the newly created asset
