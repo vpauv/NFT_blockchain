@@ -1,6 +1,7 @@
 #from algosdk import AlgodClient
 from algosdk.v2client import algod
 import accounts, assets, transfer, contract
+from utils import get_accounts, get_algod_client
 from pyteal import Mode, compileTeal
 
 
@@ -15,21 +16,15 @@ def create_client():
 #Creamos un cliente para conectarnos con la red de prueba (Tesnet) de Algorand
 #y asi poder realizar operaciones
 algod_client = create_client()
+a_c = get_algod_client()
 
 #Creacion de cuentas
 accts = []
 num_accounts = 3
 accts = accounts.generate_keypair(num_accounts,accts)
 
-#Compilar smart contract
-teal_code = compileTeal(contract.nft_contract(), mode=Mode.Application)
-print(teal_code)
-
-#Transaccion de la creacion de contrato
-contract_id = transfer.create_contract_trans(algod_client,teal_code,accts[0])
-
 #Creacion de NFT sin contrato
-nft_id = assets.create_NFT(accts[0], contract_id)
+nft_id = assets.create_NFT(a_c, accts[0])
 
 # Llamada a la función para crear un NFT con contrato
 metadata = "Metadata del NFT"  # Personalizar los metadatos del NFT aquí
