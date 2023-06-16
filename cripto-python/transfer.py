@@ -1,5 +1,5 @@
 from algosdk import transaction, encoding
-from utils import get_accounts, get_algod_client
+import utils
 
 def transfer_nft(acct1,acct2,created_asset):
     algod_client = get_algod_client()
