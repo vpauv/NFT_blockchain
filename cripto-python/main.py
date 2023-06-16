@@ -21,8 +21,17 @@ accts = []
 num_accounts = 3
 accts = accounts.generate_keypair(num_accounts,accts)
 
+# Construir el diccionario de metadata
+metadata = {
+    "name": "My Artwork",
+    "description": "A beautiful artwork created by me",
+    "image": "https://drive.google.com/file/d/1zVCb4mK7JugKOGQjOTz5cphbHgPeup7E/view?usp=drive_link",
+    "creator": "John Doe",
+    "year": 2022
+}
+
 #Creacion de NFT sin contrato
-nft_id = assets.create_NFT(accts[0])
+nft_id = assets.create_NFT(accts[0], metadata)
 
 #Detalles de la transacción para transferencia de nft sin contrato
 sender_acct = accts[0]
