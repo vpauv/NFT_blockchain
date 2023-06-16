@@ -1,7 +1,6 @@
 #from algosdk import AlgodClient
 from algosdk.v2client import algod
 import accounts, assets, transfer, contract
-from utils import get_accounts, get_algod_client
 from pyteal import Mode, compileTeal
 
 
@@ -16,7 +15,6 @@ def create_client():
 #Creamos un cliente para conectarnos con la red de prueba (Tesnet) de Algorand
 #y asi poder realizar operaciones
 algod_client = create_client()
-a_c = get_algod_client()
 
 #Creacion de cuentas
 accts = []
@@ -24,33 +22,18 @@ num_accounts = 3
 accts = accounts.generate_keypair(num_accounts,accts)
 
 #Creacion de NFT sin contrato
-nft_id = assets.create_NFT(a_c, accts[0])
-
-# Llamada a la función para crear un NFT con contrato
-metadata = "Metadata del NFT"  # Personalizar los metadatos del NFT aquí
-txid = assets.create_nft_wContract(algod_client,contract_id, accts[0][0], metadata)
-print("Transacción enviada. ID de la transacción de creacion de NFT con contrato:", txid)
+nft_id = assets.create_NFT(accts[0])
 
 #Detalles de la transacción para transferencia de nft sin contrato
 sender_acct = accts[0]
 receiver_acct = accts[1]
-txid = transfer.transfer_nft(algod_client,sender_acct,receiver_acct,nft_id)
+txid = transfer.transfer_nft(sender_acct,receiver_acct,nft_id)
 print("Transacción enviada. ID de la transacción de transferencia de NFT sin contrato:", txid)
-
-#Detalles de la transacción para transferencia de nft con contrato
-sender_acct = accts[0]
-receiver_acct = accts[1]
-txid = transfer.transfer_nft_wContract(algod_client, contract_id, sender_acct, receiver_acct)
-print("Transacción enviada. ID de la transacción de transferencia de NFT con contrato:", txid)
 
 #Eliminacion del NFT sin contrato
 acct_delete = accts[0]
-txid = assets.delete_nft(algod_client, acct_delete, nft_id)
+txid = assets.delete_nft(acct_delete, nft_id)
 print("Transacción enviada. ID de la transacción de eliminacion de NFT sin contrato:", txid)
-
-#€liminacion del NFT con contrato
-txid = assets.delete_nft_wContract(algod_client, contract_id, accts[0][0])
-print("Transacción enviada. ID de la transacción de eliminaciòn de NFT con contrato:", txid)
 
 # now, trying to fetch the asset info should result in an error
 try:

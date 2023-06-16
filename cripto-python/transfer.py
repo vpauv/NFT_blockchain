@@ -1,6 +1,8 @@
 from algosdk import transaction, encoding
+from utils import get_accounts, get_algod_client
 
-def transfer_nft(algod_client,acct1,acct2,created_asset):
+def transfer_nft(acct1,acct2,created_asset):
+    algod_client = get_algod_client()
     sp = algod_client.suggested_params()
     # Create transfer transaction
     xfer_txn = transaction.AssetTransferTxn(

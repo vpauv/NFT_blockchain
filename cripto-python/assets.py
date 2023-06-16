@@ -1,10 +1,12 @@
 from typing import Any, Dict
 from algosdk import transaction, encoding
+from utils import get_accounts, get_algod_client
 import transfer as transModule
 # Account 1 creates an asset called `rug` with a total supply
 # of 1000 units and sets itself to the freeze/clawback/manager/reserve roles
 
-def create_NFT(algod_client, acct):
+def create_NFT(acct):
+    algod_client = get_algod_client()
     sp = algod_client.suggested_params()
     txn = transaction.AssetConfigTxn(
         sender=acct[1],
@@ -74,7 +76,8 @@ def modify_asset(algod_client, acct):
     results = transaction.wait_for_confirmation(algod_client, txid, 4)
     print(f"Result confirmed in round: {results['confirmed-round']}")
 
-def delete_nft(algod_client, acct, created_asset):
+def delete_nft(acct, created_asset):
+    algod_client = get_algod_client()
     sp = algod_client.suggested_params()
     # Create asset destroy transaction to destroy the asset
     destroy_txn = transaction.AssetDestroyTxn(
