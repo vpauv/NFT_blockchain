@@ -6,19 +6,30 @@ import transfer as transModule
 # of 1000 units and sets itself to the freeze/clawback/manager/reserve roles
 
 def create_NFT(acct):
+     # Convertir el diccionario a JSON
+    metadata_json = json.dumps(metadata)
+    hash = hash_json(metadata_json)
+    
+    # Imprimir el JSON resultante
+    #print(metadata_json)
+    
     algod_client = utils.get_algod_client()
     sp = algod_client.suggested_params()
+
+    print("Creando solicitud de NFT...:")
+    
     txn = transaction.AssetConfigTxn(
         sender=acct[1],
         sp=sp,
         default_frozen=False,
-        unit_name="rug",
+        unit_name="rug",  #asset class name
         asset_name="Really Useful Gift",
         manager=acct[1],  #Permisos sobre el NFT
         reserve=acct[1],
         freeze=acct[1],
         clawback=acct[1],
-        url="https://path/to/my/asset/details.json",  #URL de la metadata del NFT en formato JSON 
+        url="https://drive.google.com/file/d/1zVCb4mK7JugKOGQjOTz5cphbHgPeup7E/view?usp=drive_link",  #URL de la metadata del NFT en formato JSON 
+        metadata_hash = hash,
         total=1,  #Numero de copias del NTF
         decimals=0, #Numero de particiones
     )
