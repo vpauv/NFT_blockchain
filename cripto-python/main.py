@@ -2,7 +2,34 @@
 from algosdk.v2client import algod
 import accounts, assets, transfer, contract, utils
 from pyteal import Mode, compileTeal
+import sys
 
+#Creacion de cuentas
+def create_account(num_accts, accts):
+    accts = accounts.generate_keypair(num_accts, accts)
+
+#Creacion de NFT sin contrato
+def create_NFT_no_contract(accts):
+    nft_id = assets.create_NFT(accts[0], metadata)
+
+#Ver saldo de la cuenta
+def account_balance(accts):
+    account_info: Dict[str, Any] = algod_client.account_info(accts[0][1])
+    print(f"Account balance: {account_info.get('amount')} microAlgos")
+
+
+#Detalles de la transacción para transferencia de nft sin contrato
+def NFT_transfer(accts):
+    sender_acct = accts[0]
+    receiver_acct = accts[1]
+    txid = transfer.transfer_nft(sender_acct,receiver_acct,nft_id)
+    print("Transaction sent. No contract NFT transfer transaction ID:", txid)
+
+#Eliminacion del NFT sin contrato
+def NFT_delete(accts):
+    acct_delete = accts[0]
+    txid = assets.delete_nft(acct_delete, nft_id)
+    print("Transaction sent. No contract NFT delete transaction ID:", txid)
 
 def create_client():
     algod_token = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
@@ -16,10 +43,8 @@ def create_client():
 #y asi poder realizar operaciones
 algod_client = create_client()
 
-#Creacion de cuentas
 accts = []
-num_accounts = 3
-accts = accounts.generate_keypair(num_accounts,accts)
+num_accts = 2
 
 # Construir el diccionario de metadata
 metadata = {
@@ -30,19 +55,46 @@ metadata = {
     "year": 2022
 }
 
-#Creacion de NFT sin contrato
-nft_id = assets.create_NFT(accts[0], metadata)
 
-#Detalles de la transacción para transferencia de nft sin contrato
-sender_acct = accts[0]
-receiver_acct = accts[1]
-txid = transfer.transfer_nft(sender_acct,receiver_acct,nft_id)
-print("Transacción enviada. ID de la transacción de transferencia de NFT sin contrato:", txid)
+action = 1
 
-#Eliminacion del NFT sin contrato
-acct_delete = accts[0]
-txid = assets.delete_nft(acct_delete, nft_id)
-print("Transacción enviada. ID de la transacción de eliminacion de NFT sin contrato:", txid)
+while action == 1:
+    
+    print("")
+    print("1. Create an account")
+    print("2. Create NFT without contract")
+    print("3. NFT transfer")
+    print("4. Account balance")
+    print("5. Delete NFT")
+    print("6. Exit")
+
+    action = int(input("Select an action: "))
+
+    print("")
+
+    if action == 1:
+        create_account(num_accts, accts)
+        action = 1;
+    elif action == 2:
+        create_NFT_no_contract(accts)
+        action = 1;
+    elif action == 3:
+        NFT_transfer(accts)
+        action = 1;
+    elif action == 4:
+        account_balance(accts)
+        action = 1;
+    elif action == 5:
+        NFT_delete(accts)
+        action = 1;
+    elif action == 6:
+        sys.exit()
+        action = 1;
+    else:
+        print("Invalid option...")
+        action = 1;
+
+
 
 # now, trying to fetch the asset info should result in an error
 try:
