@@ -8,7 +8,7 @@ import json, hashlib
 def create_NFT(algod_client,acct,metadata):
      # Convertir el diccionario a JSON
     metadata_json = json.dumps(metadata)
-    hash = hash_json(metadata_json)
+    Hash = hash_json(metadata_json)
     
     # Imprimir el JSON resultante
     #print(metadata_json)
@@ -27,10 +27,9 @@ def create_NFT(algod_client,acct,metadata):
         freeze=acct[1],
         clawback=acct[1],
         url="https://drive.google.com/file/d/1zVCb4mK7JugKOGQjOTz5cphbHgPeup7E/view?usp=drive_link",  #URL de la metadata del NFT en formato JSON 
-        metadata_hash = hash,
+        metadata_hash = bytes.fromhex(Hash),
         total=1,  #Numero de copias del NTF
         decimals=0, #Numero de particiones
-        metadata = metadata_json
     )
 
     # Sign with secret key of creator

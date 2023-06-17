@@ -9,6 +9,8 @@ def generate_keypair(num_accts, accts):
         print(f"private key: {acct[0]}")
         print(f"mnemonic: {mnemonic.from_private_key(acct[0])}")
 
+        #build
+
     return accts
 
 def get_info_account(algod_client, addr):
